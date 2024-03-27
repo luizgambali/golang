@@ -1,0 +1,1031 @@
+Resumo curso Aprenda Golang do Zero! Desenvolva uma APLICAÇÃO COMPLETA!
+
+1. Instalação, Ferramentas e Documentação
+
+	Download: https://go.dev/
+	IDE: Visual Studio.
+	
+	Plugin do VS Code: Go (oficial Go team)
+	
+	Documentação: https://go.dev/doc/effective_go
+
+	Repositorio do curso: https://github.com/OtavioGallego/curso-golang
+	App do curso: https://github.com/OtavioGallego/DevBook
+
+2. Pacotes e módulos
+
+	Pacotes são como "namespaces" no Java/C#.
+	
+	Exemplo:
+	
+		package main
+		
+		import "fmt"
+		
+		func main() {
+			
+			fmt.Println("Hello World!")
+		
+		}
+
+	O ponto de entrada de uma aplicação Go é a "func main()", dentro do pacote main.
+	
+	Exceto pelo pacote main, por convenção, o nome do pacote deve ser o mesmo do repositório
+	onde ele ficará hospedado. No Java, por exemplo, utiliza-se a convenção "com.projeto..."
+	
+	Módulo indica ao Go que todos os pacotes que serão criados e utilizados na aplicação
+	estão na mesma pasta, e não na que está em "GOPATH". Essa é a forma padrão para criar uma
+	aplicação Go: inicializar o módulo antes de criar os pacotes.
+	
+	Para criar um módulo, entre na pasta da aplicação, e crie o modulo com o comando:
+	
+	go mod init <<nome do pacote>>
+	
+	Exemplo:
+	
+	go mod init github.com/seunome/exemplohelloworld
+	
+	Este comando criará um arquivo go.mod dentro da pasta, conforme exemplo abaixo:
+	
+	go.mod
+	
+		module github.com/seunome/exemplohelloworld
+	
+		go 1.21.4
+	
+	A partir de agora, você poderá criar novos pacotes, e referencia-los dentro da main
+	sem maiores problemas. Por convenção, pacotes devem ser criados dentro de pastas 
+	separadas da pasta principal. O nome da pasta não precisa ser necessariamente o nome
+	do pacote, basta que os arquivos dentro da pasta pertençam ao mesmo pacote (não é regra,
+	mas organiza melhor o código dessa forma).
+	
+	Pra fins de comparação, o arquivo go.mod funciona de forma semelhante ao package.json 
+	do NodeJs, ou como no arquivo .csproj do C# (na parte que controla os namespaces)
+			
+	Para importar os pacotes, usa-se import. Na maior parte dos casos, a extensão do Go
+	no VS Code fará a importação automaticamente. Contudo, pode-se importar manualmente
+	o pacote.
+	
+	Exemplo:
+	
+		main.go
+	
+		package main
+		
+		import (
+			"fmt"
+			"github.com/seunome/exemplohelloworld/mensagem"
+		)
+
+		package main() {
+		
+			fmt.Println("Este é um exemplo de mensagem da main")
+			mensagem.ExibirMensagem("Esta é uma função que está dentro do pacote mensagem")
+		
+		}
+	
+		mensagem.go
+		
+		package mensagem
+		
+		import "fmt"
+		
+		func ExibirMensagem(mensagem string) {
+		
+			fmt.Println(mensagem)
+		
+		}
+	
+	Note que, após inicializar o módulo, no import do arquivo main.go, é necessário informar
+	o módulo definido no "go mod init" para importar o pacote mensagem. No arquivo mensagem.go,
+	definimos somente o nome do pacote como "mensagem".
+	
+	Isso ocorre porque, como criamos um módulo, todos os pacotes que criarmos dentro deste 
+	pacote serão referenciados pelo nome do modulo + nome do pacote:
+	
+		github.com/seunome/exemplohelloworld/mensagem/mensagem
+	
+	Isso indica que estou utilizando o pacote "mensagem", que está no módulo "github.com/seunome/exemplohelloworld"
+	
+	Para utilizar o pacote mensagem, eu não preciso do caminho todo (modulo + pacote), basta
+	apenas utilizar o nome do pacote:
+	
+		mensagem.ExibirMensagem("Esta é uma função que está dentro do pacote mensagem")
+	
+	
+	Go não é orientado a objetos, e não possui private, public, protected como em Java/C#. Para que
+	uma função, struct ou variavel possa ser visualizada em outros pacotes além daquele em
+	que eles foram criados, deve-se colocar a primeira letra do nome em maiúsculo. Nomes que
+	começam com letrar minúsculas só são visíveis dentro do próprio pacote.
+	
+	Exemplo:
+	
+		func exibirMensagem() -> só será visível dentro do pacote em que foi declarada
+		func ExibirMensagem() -> será visível em outros pacotes
+		
+	Ainda falando em pacotes, o arquivo go.mod pode crescer bastante, a medida que se utilizam
+	outros pacotes na aplicação:
+	
+		module apiexemplo03
+
+		go 1.22.1
+
+		require github.com/gin-gonic/gin v1.9.1
+
+		require (
+			github.com/bytedance/sonic v1.9.1 // indirect
+			github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
+			github.com/gabriel-vasile/mimetype v1.4.2 // indirect
+			github.com/gin-contrib/sse v0.1.0 // indirect
+			github.com/go-playground/locales v0.14.1 // indirect
+			github.com/go-playground/universal-translator v0.18.1 // indirect
+			github.com/go-playground/validator/v10 v10.14.0 // indirect
+			github.com/goccy/go-json v0.10.2 // indirect
+			github.com/json-iterator/go v1.1.12 // indirect
+			github.com/klauspost/cpuid/v2 v2.2.4 // indirect
+			github.com/leodido/go-urn v1.2.4 // indirect
+			github.com/mattn/go-isatty v0.0.19 // indirect
+			github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
+			github.com/modern-go/reflect2 v1.0.2 // indirect
+			github.com/pelletier/go-toml/v2 v2.0.8 // indirect
+			github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
+			github.com/ugorji/go/codec v1.2.11 // indirect
+			golang.org/x/arch v0.3.0 // indirect
+			golang.org/x/crypto v0.9.0 // indirect
+			golang.org/x/net v0.10.0 // indirect
+			golang.org/x/sys v0.8.0 // indirect
+			golang.org/x/text v0.9.0 // indirect
+			google.golang.org/protobuf v1.30.0 // indirect
+			gopkg.in/yaml.v3 v3.0.1 // indirect
+		)
+
+	Não é recomendado editar esse arquivo manualmente! A medida em que você utiliza novos pacotes,
+	o Go vai adicionando as referencias desses pacotes em go.mod.
+	
+	Para obter um pacote (download), utilize o comando: go get <<nome do pacote>>
+	
+	Para adicionar ou limpar os pacotes em go.mod, utilize o comando: go mod tidy
+	
+3. Variáveis, Constantes, Tipos de dados e Escopo de Variaveis
+
+	Go é uma linguagem fortemente tipada, como Java/C#. Uma vez que a variavel é declarada
+	ou inicializada com um determinado tipo, nenhum valor de tipo diferente pode ser atribuido
+	a ela.
+	
+	TODA VARIÁVEL DECLARADA NUM PROGRAMA GO PRECISA SER UTILIZADA. Go não permite que sejam
+	criadas variáveis, e que elas não sejam utilizadas, pois aponta erro de compilação.
+
+	A nomenclatura de variaveis segue a regra geral de outras linguagens:
+	
+		- ser declarativa
+		- começar por letra
+		- não ter espaços em branco no meio do nome
+		- etc.
+
+	Há basicamente duas formas de se declarar variáveis em Go
+	
+	Declaração explícita:
+	
+		var <<nome-da-variavel>> <<tipo-da-variavel>> = <<inicializacao-da-variavel>>
+		
+		Exemplos:
+		
+			var nome string = "José da Silva"
+			var idade int = 35
+			var pago bool = true
+		
+		Não é necessário inicializar a variável, porém, é uma boa prática. Caso a variável não
+		tenha sido inicializada, ela será inicializada com seu valor padrão:
+		
+			strings são inicializadas com ""
+			numeros são incializados com 0
+	
+	Declaração implícita ou por inferencia de tipo:
+	
+		<<nome-da-variavel>> := <<inicializacao-da-variavel>>
+	
+		nome := "José da Silva"
+		idade := 35
+		pago := true
+		
+		Neste caso, a inicialização da variável é obrigatória.
+
+	
+	Para ambos os casos, ainda é possível declarar variáveis de forma otimizada.
+	
+		Exemplos:
+	
+			primeiroNome, segundoNome := "José", "da Silva"
+		
+			var i, j, k int = 1, 2, 3
+			
+	Contantes
+
+		São semelhantes a variáveis, mas como o nome sugere, uma vez declaradas com um valor,
+		esse valor não pode ser mais alterado.
+		
+		A declaração de constantes, nomenclatura, escopo, etc., segue o mesmo padrão das variaveis:
+		
+		const <<nome-da-constante>> <<tipo-da-constante>> = <<valor-da-constante>>
+		
+		Exemplos:
+		
+		const pi = 3.14
+		
+		const (
+			programa = "Declaracao de constantes em GO"
+			fator = 7.56
+		)
+	
+	Tipos de dados
+
+		Go possui os seguintes tipos de dados básicos:
+	
+		string							-> cadeia de caracteres
+		int8, int16, int32, int64		-> numeros inteiros
+		uint8, uint16, uint32, uint64	-> numeros inteiros, somente positivos
+		float32, float64				-> numeros com casas decimais	
+		bool							-> valores booleanos (true, false)
+		byte							-> equivalente ao int8
+
+		É possível utilizar ainda o tipo int (sem especificar o tamanho). Neste caso,
+		a variavel será criada de acordo com a arquitetura do processador: 32 ou 64.
+
+		É possível ainda criar tipos complexos, utilizando structs:
+
+			type Contato struct {
+				Nome 		string
+				Email		string
+				Telefone	string
+			}
+		
+			...
+			
+			var contato Contato
+			var contato2 = Contato{"João", "",""}
+			
+			contato3 := Contato{"João","joao@email.com", "1111111"}
+		
+		Existe o tipo char em Go?
+		
+		Go possui apenas o tipo string, sempre utilizando os valores entre aspas duplas ("")
+		
+		Para representar um char, como em outras linguagens, seria utilizado aspas simples ('').
+		
+		Porém, em Go, ele converterá o valor entre aspas simples para um numero, que representa
+		aquele caractere na tabela ASCII.
+		
+		Exemplo:
+		
+			caractere := 'B'
+			
+			println(caractere)		//será impresso 66 na tela, código correpondente em ASCII para B
+		
+	Escopo de variáveis
+
+		Basicamente, segue a mesma regra de outras linguagens. 
+		
+		package main
+		
+		import "fmt"
+		
+		var nome = "José"  //variavel "global"
+		
+		func main() {
+		
+			fmt.Println(nome)
+			
+			soma := SomarNumeros(10, 20)	//soma só é visível dentro de main
+			
+			if soma > 10 {
+			
+				resultado := soma + 10		//resultado só é visível dentro do bloco "if"
+				
+				fmt.Println(resultado)
+			
+			}
+			
+		}
+
+	
+4. Funções
+
+	Funções em Go são blocos de código, que ajudam a organizar o código. São
+	semelhantes aos "métodos" do Java/C#/Javascript. Funções também são um
+	"tipo" em Go.
+	
+	Funções podem ou não retornar valores, e ter ou não parametros.
+	
+	A declaração básica de uma função no Go segue a seguinte estrutura:
+	
+	func <<nome-da-funcao>>(<<lista-de-parametros>>) <<retorno>> {
+		//código da função
+	}
+	
+	A função mais utilizada no Go é a main, pois é por ela que o código
+	começa a ser executado:
+	
+		func main() {
+			fmt.Println("Hello world!")
+		}
+	
+	Exemplos:
+	
+		Função sem parametro, sem retorno:
+		
+		func MostrarMensagemErro() {
+		
+			fmt.Println("Ocorreu um erro")
+		}
+	
+		Função com parametros, sem retorno:
+		
+		func MostrarMensagemErro(mensagem string) {
+		
+			fmt.Println(mensagem)
+		}
+		
+		Função com parâmetro, e retorno
+		
+			func Soma(a int, b int) int {		
+				return a + b
+			}
+			
+			...
+			
+			resultado := Soma(10,20)
+		
+		Função que retorna mais de um valor:
+		
+			func Divisao(a float32, b float32) (float32, error) {
+			
+				if b > 0 {
+					return a/b, error("Divisao por zero")
+				}
+				
+				return a/b
+			
+			}
+		
+			...
+			
+			resultado, erro := Divisao(10,2)
+			
+			if erro == nil {
+				fmt.Println("Resultado da divisao:", resultado)
+			}
+			
+			Ignorando valores em funções que retornam mais de um valor:
+		
+				func MinhaFuncao() (int, int) {
+					return 10, 15
+				}
+				
+				...
+				
+				valor1, _ := MinhaFuncao()	//neste caso, o valor do segundo item será ignorado
+				
+				_ , valor2 := MinhaFuncao() //neste caso, o valor do primeiro item será ignorado
+		
+			Por que ignorar valores?
+		
+				Pode ser que a função retorne mais de um valor, mas que você não irá utilizar no
+				código. Por exemplo, uma função que retorne o indice e o valor de um item do array,
+				mas você só precise do valor:
+				
+				var dias = []string{"Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sabado"}
+				
+				for indice, valor := range dias {
+					fmt.Println(valor)
+				}
+			
+				Neste caso, você vai ter um erro de compilação, pois a variavel indice foi criada, mas
+				não foi utilizada. Lembre-se: TODA VARIAVEL DECLARADA PRECISA SER UTILIZADA! Então, para
+				resolver o problema, você faria dessa forma:
+				
+				var dias = []string{"Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sabado"}
+				
+				for _ , valor := range dias {
+					fmt.Println(valor)
+				}
+				
+		Função como Tipo:
+		
+			Em Go, funções podem ser tipos:
+			
+				f := func() {
+						fmt.Println("Funcao anonima")
+					}
+
+				...
+
+				f()		//chamada da função, na verdade, da variavel do tipo função
+			
+			Essa função pode receber parametros e ter um retorno
+			
+				Exemplo 1:
+				
+				f := func(mensagem string) {
+						fmt.Println(mensagem)
+					 }
+
+				f("Mostre essa mensagem!")
+			
+				Exemplo 2:
+				
+				f := func(a int, b int) int{
+						return a + b
+					}
+
+				result := f(10, 20)
+
+				fmt.Println(result)
+			
+	Importante:
+	
+		Lembre-se de que, se o nome da função começar com caractere minusculo, a função será
+		visível apenas dentro do pacote em que ela foi declarada. Se começar com letra maiúscula,
+		será visivel em outros pacotes.
+		
+		
+5. Operadores
+
+	Atribuição:
+	
+		=, :=
+
+	Aritméticos: 
+	
+		Operações: + - * /
+		Incremento/Decremento: +=, -=, ++, --
+	
+	Lógicos:
+	
+		&& -> and
+		|| -> or
+		!  -> not
+		
+		== -> igual
+		!= -> diferente
+		>= -> maior ou igual
+		<= -> menor ou igual
+		
+6. Structs
+
+	É um tipo especial de dados, semelhante a classes (não é uma classe). Forma um tipo composto
+	de dados.
+	
+	type <<nome-da-struct>> struct {
+		<<dados>>
+	}
+	
+	Exemplo:
+	
+		type Contato struct {
+			Nome		string
+			Idade		int8
+			Email		string
+			Telefone	string			
+		}
+	
+		...
+		
+		var contato Contato
+		
+		contato.Nome = "Joao"
+		contato.Idade = 37
+		contato.Telefone = "1111111"
+		
+		var contato2 = Contato{"João", 35, "",""}	//precisa estar na mesma ordem dos atributos
+			
+		contato3 := Contato{"João",25, "joao@email.com", "1111111"} //precisa estar na mesma ordem dos atributos
+		
+		contato4 := Contato{Nome: "Joao", Telefone: "111111"}	//se especificar o atributo, não precisa estar na ordem
+		
+		
+	É possível ter atributos de outra struct:
+	
+		type Endereco struct {
+			Logradouro		string
+			Cidade			string
+			Estado			string
+		}
+		
+		type Pessoa struct {
+			Nome		string
+			Email		string
+			Telefone	string
+			Endereco	Endereco
+		}
+		
+		...
+	
+		var pessoa Pessoa
+		var endereco Endereco
+		pessoa.Nome = "Joao"
+		pessoa.Email = "joao@email.com"
+		pessoa.Telefone = "111111"
+		
+		endereco.Logradouro = "Rua das Flores"
+		endereco.Cidade = "São Paulo"
+		endereco.Estado = "SP"
+		
+		pessoa.Endereco = endereco
+		
+	Também é possível fazer uma struct "herdar" os atributos de outra:
+
+		
+		type Endereco struct {
+			Logradouro		string
+			Cidade			string
+			Estado			string
+		}
+		
+		type Pessoa struct {
+			Nome		string
+			Email		string
+			Telefone	string
+			Endereco				//nao especificar o tipo...
+		}
+		
+		...
+	
+		var pessoa Pessoa
+		var endereco Endereco
+		pessoa.Nome = "Joao"
+		pessoa.Email = "joao@email.com"
+		pessoa.Telefone = "111111"		
+		
+		//... faz com que não precise criar uma nova variavel e preencher!
+		//os atributos ficam como se fossem da struct Pessoa
+		
+		pessoa.Logradouro = "Rua das Flores"
+		pessoa.Cidade = "São Paulo"
+		pessoa.Estado = "SP"
+		
+7. Ponteiros
+
+	Imagine a seguinte situação:
+	
+		var variavel1 int = 10
+		var variavel2 int = variavel1
+		
+	O que aconteceria se eu alterar o valor de variavel1 para 100?
+	
+		variavel1 = 100
+	
+	O valor de variavel1 seria alterado para 100, mas não afetaria o valor
+	de variavel2. Isso porque são variaveis diferentes, e portanto, ocupam
+	lugares diferentes na memória.
+	
+	Ponteiros permitem que uma variável compartilhe o valor de um mesmo espaço
+	de memoria:
+	
+		var variavel1 int = 10
+		var variavel2 *int = &variavel1
+	
+	Agora, a variavel2 aponta para o mesmo endereço de memória da variavel1. 
+	Desta forma, se eu alterar o valor de variavel1, variavel2 também será
+	afetada, pois ela aponta para o mesmo endereço de memória da variavel1
+	
+		variavel1 = 100
+		*variavel2 -> 100 também!
+		
+	Simples assim!
+	
+	Outros exemplos:
+	
+		var a int = 10
+		var b *int = &a		//b ponta para o endereço de a
+		
+		fmt.Println("Valor de a: ", a)		//valor da variavel a
+		fmt.Println("Endereço de a: ", &a)	//endereço de memoria da variavel a
+		fmt.Println("Endereço de b: ", &b) 	//endereço de memoria da variavel b
+		fmt.Println("Valor de b: ", b)		//endereço que b aponta, o mesmo de a
+		fmt.Println("Valor de b: ", *b)		//valor de b, o mesmo valor de a, no caso, 10
+		
+	Para que eu utilizaria ponteiros?
+	
+		Especificamente, para casos em que você precise passar o parâmetro por referencia, 
+		e não por valor. Pense em uma função que recebe um valor, o qual o código da func 
+		precise alterar o valor recebido como parametro:
+		
+		Exemplo:
+		
+			package main
+			
+			import "fmt"
+			
+			func main() {
+				nome := "João da Silva"
+
+				AlterarValor(nome)
+				
+				fmt.Println(nome)
+			}	
+			
+			func AlterarValor(valor string) {
+				valor = "Novo Valor"
+			}
+		
+		Ao rodar o programa, o nome a ser mostrado na tela será "João da Silva". Isso ocorre
+		porque será criada uma nova variável dentro da função chamada "valor". A variavel valor
+		terá o valor "Novo Valor". Porém, a variavel nome não será alterada, ela está em outro
+		escopo.
+		
+		Para resolver esse problema, o código ficaria assim:
+		
+			package main
+			
+			import "fmt"
+			
+			func main() {
+				nome := "João da Silva"
+
+				AlterarValor(&nome)
+				
+				fmt.Println(nome)
+			}	
+			
+			func AlterarValor(valor *string) {
+				valor = "Novo Valor"
+			}
+		
+		Agora, o valor a ser exibido na tela será "Novo Valor", pois a variavel valor é um ponteiro
+		que aponta para o endereço de memória de nome (&nome).
+		
+		É o conceito de passagem de parâmetros por valor ou por referencia, de outras linguagens, como
+		Java/C#
+		
+		O mesmo aconteceria para o retorno da função. Imagine que, dentro da função, eu crio um struct Pessoa,
+		e retorno o ponteiro para esse objeto. Ao alterar o valor na função main, ele vai alterar o objeto
+		criado dentro da funcao, pois ambos estão apontando para o mesmo endereço de memoria
+		
+			package main
+
+			import "fmt"
+
+			type Pessoa struct {
+				nome string
+				idade  int
+			}
+
+			func criarPessoa() *Pessoa {
+				ps := Pessoa{nome: "Joao", idade: 30}
+				return &ps
+			}
+			func main() {
+				ptr := criarPessoa()
+				fmt.Println(*ptr)
+
+				ptr.idade = 40
+				fmt.Println(*ptr)
+			}
+		
+8. Arrays e Slices
+	
+	Arrays como em outras linguagens é um tipo especial que permite que uma variável tenha um conjunto
+	de valores do mesmo tipo, referenciados pela sua posição. Ao invés de um único valor, eu posso 
+	guardar "n" valores dentro de uma mesma variável. Arrays tem um número fixo e conhecido de posições.
+	
+		var frutas = [5]string {"Banana", "Maça", "Pera", "Uva", "Abacaxi"} 
+		
+		fmt.Println(frutas)			// mostrara [Banana, Maça, Pera, Uva, Abacaxi] no console
+		fmt.Println(frutas[0])		// mostrara Banana no console
+		
+		var semana := [...]string ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sabado", "Domingo"]
+		
+		fmt.Println(semana[2])		//mostrara Quarta no console
+	
+	Slices são semelhantes a Arrays, contudo, não tem um número limitado de posições, é dinamico.
+	É semelhante a listas em Java/C#. É muito mais utilizado que array. Um slice aponta sempre para
+	um array.
+	
+		slice := []int {1,2,5,6,9,10}
+		var frutas = []string {"Banana", "Maça", "Pera", "Uva", "Abacaxi"}
+	
+	Para adicionar itens ao slice:
+	
+		meuslice = append(meuslice, 20)
+		
+		fmt.Println(meuslice) 	// mostrara no console [1,2,5,6,9,10,18]
+	
+	Para recuperar valores de um slice
+	
+		minhasfrutas := frutas[1:3]	// cria um novo slice
+		
+		fmt.Println(minhasfrutas)		// mostrara [Maça Pera] no console
+		fmt.Println(minhasfrutas[0])	// mostrara Maça no console
+	
+	Por que ele mostrou Maça e Pera? Por causa dos indices; o primeiro valor é inclusivo, o 
+	segundo exclusivo. Ele pega o primeiro indice (1), o segundo, e exclui o terceiro.
+	
+	* só para registro, achei isso uma porcaria, porque confunde! [1,3] seria como dizer:
+	"pegue o array frutas, do item 1 ao 3, e desconsidere o terceiro item!"
+	
+	Adicionar itens ao slice:
+	
+	frutas = append(frutas, "Morango")
+	
+	Saber o tamanho do slice:
+	
+	fmt.Println(len(frutas))
+
+	Saber a capacidade do slice:
+
+	fmt.Println(cap(frutas))
+
+7. Map
+
+	Map são estruturas do tipo chave-valor, semelhantes a Dictionary em Java/C#
+
+	Criando um Map:
+	
+		//dentro das chaves é o tipo da chave, fora é o tipo do valor
+		chaves := map[string]string{
+		"chave1": "valor-da-chave-1",
+		"chave2": "valor-da-chave-2",
+		"chave3": "valor-da-chave-3",
+		}
+
+		...
+
+		fmt.Println(chaves)
+		fmt.Println(chaves["chave1"])
+
+	Criando um map aninhado:
+
+	usuario := map[string]map[string]string{
+		"nome": {
+			"primeiro": "Joao",
+			"segundo":  "Pedro",
+		},
+	}
+
+	fmt.Println(usuario)
+	fmt.Println(usuario["nome"]["primeiro"])	
+	
+	
+8. If Else Switch
+
+	São estruturas de controle de fluxo do programa.
+
+	if <condicao> {
+		<comandos>
+	}
+
+	if <condicao> {
+		<comandos>
+	}else {
+		<comandos>
+	}
+
+
+	switch <variavel> {
+
+		case <condicao>: 
+			<codigo>
+		case <outra condicao>:
+			<codigo>
+		...
+		default:
+			<codigo>
+	}
+
+9. Loops
+
+	Go não possui outra instrução de loop senão o for. Mas ela substitui as outras
+
+	FOR Normal:
+
+		for i := 0; i < 10; i++ {
+			fmt.Println("Valor:", i)
+		}
+
+	FOR EACH:
+
+		dias := []string{"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"}
+
+		for indice, valor := range dias {
+			fmt.Println("Posicao ", indice, "Valor", valor)
+		}
+	
+	WHILE:
+
+		var soma = 5
+
+		for soma > 0 {
+			fmt.Println("Valor: ", soma)
+			soma--
+		}
+	
+	DO-WHILE:
+
+		var soma = 5
+
+		for {
+			fmt.Println("Valor: ", soma)
+			soma--
+
+			if soma == 0 {
+				break
+			}
+
+		}
+		fmt.Println("Saiu do laço ok!")
+
+
+10. Trabalhando com strings
+
+	Para trabalhar com funções de strings, importar o pacote strings:
+
+	Exemplo:
+
+		package main
+
+		import (
+			"fmt"
+			"strings"
+		)
+
+		var p = fmt.Println
+
+		func main() {
+
+			var texto string = "Esta é a string de teste, para manipulação de funções de string"
+
+			fmt.Println("Manipulação de strings")
+
+			p("Contains:  ", strings.Contains(texto, "teste"))
+			p("Count:     ", strings.Count(texto, "t"))
+			p("HasPrefix: ", strings.HasPrefix(texto, "te"))
+			p("HasSuffix: ", strings.HasSuffix(texto, "st"))
+			p("Index:     ", strings.Index(texto, "para"))
+			p("Join:      ", strings.Join([]string{"a", "b"}, "-"))
+			p("Repeat:    ", strings.Repeat("a", 5))
+			p("Replace:   ", strings.Replace(texto, "e", "X", -1))
+			p("Replace:   ", strings.Replace(texto, "e", "X", 1))
+			p("Split:     ", strings.Split(texto, " "))
+			p("ToLower:   ", strings.ToLower(texto))
+			p("ToUpper:   ", strings.ToUpper(texto))
+			p("Compare	teste Teste  ", strings.Compare("teste", "Teste"))
+			p("Compare	Teste teste  ", strings.Compare("Teste", "teste"))
+			p("Compare	teste teste  ", strings.Compare("teste", "teste"))
+		}
+
+11. Trabalhando com datas
+
+	Para tratamento de datas, importar o pacote time
+
+	Exemplo:
+
+		package main
+
+		import (
+			"fmt"
+			"time"
+		)
+
+		//apenas para simplificar o código...
+		var p = fmt.Println
+		var pf = fmt.Printf
+
+		func main() {
+
+			data := time.Now()
+			datautc := time.Now().UTC()
+
+			p("******* Data e hora atual *******")
+			p("Data/hora atual (local): ", data)
+			p("Data/hora atual (UTC): ", datautc)
+
+			pf("Dia %d Mes %d Ano %d\n", data.Day(), data.Month(), data.Year())
+			pf("Hora %d minuto %d segundo %d\n", data.Hour(), data.Minute(), data.Second())
+
+			p("******* NOVA DATA *******")
+			newdate := time.Date(2021, time.August, 22, 11, 45, 0, 0, time.Local)
+			pf("%s\n", newdate.Local())
+
+			p("******* CONVERSAO DE FORMATO *******")
+			p("Time: ", data.Format("15:04:05"))
+			p("Date:", data.Format("Jan 2, 2006"))
+			p("Timestamp:", data.Format(time.Stamp))
+			p("ANSIC:", data.Format(time.ANSIC))
+			p("UnixDate:", data.Format(time.UnixDate))
+			p("Kitchen:", data.Format(time.Kitchen))
+
+			p("SQL: ", data.Format("2006-01-02"))
+			p("SQL Date Time: ", data.Format("2006-01-02 3:04:05"))
+			p("Pt/BR: ", data.Format("02/01/2006"))
+			p("Pt/BR: ", data.Format("02/01/2006 3:4:5 PM"))
+			p("SQL: ", data.Format("2006-01-02 3:4:5"))
+			data = data.AddDate(0, 0, 3)
+			data = data.Add(time.Hour * 3)
+			p("Pt/BR: ", data.Format("02/01/2006 15:04:05"))
+		}
+
+12. Go Routines
+
+	É a forma de o Go trabalhar com concorrencia. E concorrência é diferente de paralelismo!
+
+	Em paralelismo, cada código é executado em uma thread única, e são executadas ao mesmo tempo em paralelo
+	Concorrência também distribui a execução, mas ficaria como se fosse uma mesma thread, executa um pouco uma coisa, depois executa um pouco outra
+
+	São conceitos bem similares, mas tem diferença
+	Colocando o comando "go" em frente a função, ele não espera o término da execução daquela função, para que o código abaixo seja executado
+
+	As rotinas se comunicam através de channels.
+
+	Ver a pasta '15 - Concorrencia' nos exemplos, para entender melhor o conceito e utilização.
+
+	Para maiores informações, ver https://go.dev/doc/effective_go#concurrency
+
+13. Tratamento de Erro, Panic e Recover
+
+	Tratamento de erro
+
+		Go não possui tratamento de erros do tipo try/catch/finally. Erro em Go é um tipo.
+		A forma mais comum de tratar um erro, é testando se o erro gerado é igual a nil, e a partir disso, realizar a ação necessária.
+		O erro normalmente é gerado dentro de uma função, e trazido como seu retorno.
+
+		Exemplo:
+
+			conn, err := DbConectar()
+
+			if err != nil {
+				fmt.Println("Não foi possível conectar ao banco de dados)
+			}
+
+		Para retornar um erro, basta declarar o parametro erro na função
+
+			func Dividir(int a, int b) (float32, error) {
+				if b == 0 {
+					return nil, error("Divisão por zero")
+				}
+			}
+
+			...
+
+			resultado, err := Dividir(10, 5)
+
+			if err != nil {
+				fmt.Println(err)
+			}
+
+	Panic e Recover
+
+		Há situações em que precisamos abortar o programa, em caso de falha catastrófica. Para isso usamos o conceito
+		de Panic e Recover. Panic gera um erro que faz a aplicação ser abortada. Recover tenta recuperar esse erro, 
+		e tentar novamente a execução.
+
+		Uma situação comum para Panic é a falha na conexão com o banco de dados. Se a conexão não puder ser estabelecida,
+		o programa precisa parar:
+
+		Exemplo:
+
+			...
+			conn, err := DbConectar()
+
+			if err != nil {
+				panic("Não foi possível conectar ao banco de dados)
+			}
+
+		Se não houver nenhum Recover neste caso, a aplicação vai abortar. Porém, é possível que se deseje ainda tentar
+		uma alternativa, antes da aplicação cair:
+
+			package main
+
+			import "fmt"
+
+			func RecuperarErro() {
+				if r := recover(); r != nil {
+					println("Recuperado com sucesso!")
+				}
+			}
+
+			func GerarErroRecuperar() {
+				defer RecuperarErro()
+
+				mensagem := "Olá, mundo!"
+
+				fmt.Println(mensagem)
+
+				panic("Deu um erro aqui!")
+			}
+
+			func GerarErroSemRecuperar() {
+				panic("Agora não vai ter jeito!")
+			}
+
+			func main() {
+
+				GerarErroRecuperar()
+
+				fmt.Println("Continuando a execução do programa...")
+
+				GerarErroSemRecuperar()
+			}
+
+		No exemplo acima, a rotina gerou um panic, e poderia abortar. Porém dentro dela, existe uma clausula defer,
+		que executa o recover na sequencia. No outro caso, como não há a tentativa de recover, a aplicação vai "crashar"
+

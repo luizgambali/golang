@@ -1,0 +1,1 @@
+Este é um texto escrito diretamente no arquivo!
