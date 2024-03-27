@@ -1,4 +1,4 @@
-Resumo curso Aprenda Golang do Zero! Desenvolva uma APLICAÇÃO COMPLETA!
+Resumo curso da Udemy:
 
 1. Instalação, Ferramentas e Documentação
 
