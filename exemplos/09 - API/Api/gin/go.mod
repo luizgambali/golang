@@ -1,4 +1,4 @@
-module apiexemplo03
+module gin_exemplo
 
 go 1.22.1
 
