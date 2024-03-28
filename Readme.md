@@ -1,5 +1,7 @@
 Exemplos genérios em Go, para estudo
 
+Como sempre, na pasta Docs, tem um resumo dos principais tópicos dos meus estudos.
+
 Referencias:
 
     Documentação: 
@@ -19,6 +21,6 @@ Referencias:
 
         https://gobyexample.com/
 
-        
+
 Importante: para grande parte dos exemplos (senão todos), deixei a referencia de onde peguei 
 o material.
