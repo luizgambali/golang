@@ -1029,3 +1029,133 @@ Resumo curso da Udemy:
 		No exemplo acima, a rotina gerou um panic, e poderia abortar. Porém dentro dela, existe uma clausula defer,
 		que executa o recover na sequencia. No outro caso, como não há a tentativa de recover, a aplicação vai "crashar"
 
+13. Go routines
+
+	São funções ou métodos que trabalham em concorrência. Diferentemente das threads do Java/C#, que são gerenciadas pelo
+	sistema operacional, o controle no Go é realizado pelo runtime do Go (lightweight thread) pois o custo para sua criação 
+	é muito menor quando comparada com um thread de verdade. É comum uma única thread conter milhares de goroutines sendo 
+	executadas. 
+
+	Goroutines rodam no mesmo espaço de memória, o que facilita para compartilhar objetos em memória, mas também devemos 
+	tomar cuidado para manter sincronizado. Os channels ajudam nesse processo de comunicação entre goroutines, além de 
+	evitar race condition. A comunicação entre as go routines é feita através de channels.
+
+	Ainda para fins de comparação, uma go routine é como uma chamada assincrona a uma rotina do Java/C#. Ela será chamada
+	e executada, e o código principal continuará executando.
+
+	Exemplo:
+
+		package main
+
+		import "fmt"
+
+		func MostrarMensagem() {
+			fmt.Println("Mensagem da função MostrarMensagem")
+		}
+
+		func main() {
+			fmt.Println("Mensagem da função main")
+
+			go MostrarMensagem()
+		}
+
+	A saída desse exemplo será a seguinte:
+
+		Mensagem da função MostrarMensagem
+
+	Mas a rotina MostrarMensagem não foi executada? Na verdade foi. Mas, lembra que é uma chamada assíncrona? O programa
+	fez a chamada, mas terminou antes que ela pudesse ser executada. Uma solução para isso poderia ser:
+
+		package main
+
+		import "fmt"
+
+		func MostrarMensagem() {
+			fmt.Println("Mensagem da função MostrarMensagem")
+			time.Sleep(5 * time.Second)
+		}
+
+		func main() {
+			fmt.Println("Mensagem da função main")
+
+			go MostrarMensagem()
+		}
+
+	Agora, a rotina será executada e a mensagem mostrada corretamente, já que fizemos um time.Sleep dentro da rotina. 
+	Seria como colocar um await (Java/C#) dentro da rotina, que interrompe o processamento, e garante que ela seja 
+	executada. O mesmo aconteceria se colocassemos o time.Sleep na func main, logo após a chamada da go routine, ou
+	outro comando que aguardasse a execução dela.
+
+	Channels
+
+	Canais são uma forma de comunicação entre as go routines. Através dos canais, podemos passar e receber informações
+	entre as várias go routines que estão sendo executadas.
+
+	Exemplo 1:
+
+		package main
+
+		func main() {
+
+			//canal é uma variável do tipo channel que vai receber um int
+			//ela vai permitir a troca de mensagens entre as goroutines
+			var canal = make(chan int)
+
+			//funcao anonima
+			go func() {
+				canal <- 42
+			}()
+
+			x := <-canal
+
+			println(x)
+
+		}
+
+	Exemplo 2:
+
+		package main
+
+		import (
+			"fmt"
+			"time"
+		)
+
+		func main() {
+
+			//canal é uma variável do tipo channel que vai receber um int
+			//ela vai permitir a troca de mensagens entre as goroutines
+			var canal = make(chan string)
+
+			//funcao anonima 1
+			go func() {
+				defer close(canal) //ao terminar a goroutine, o canal é fechado, evitando deadlocks
+
+				for i := 0; i < 5; i++ {
+					canal <- fmt.Sprintf("%v - %v", "primeira funcao: ", i)
+					time.Sleep(time.Second * 1)
+				}
+			}()
+
+			//funcao anonima 2
+			go func() {
+				defer close(canal) //ao terminar a goroutine, o canal é fechado, evitando deadlocks
+
+				for i := 0; i < 5; i++ {
+					canal <- fmt.Sprintf("%v - %v", "segunda funcao: ", i)
+					time.Sleep(time.Second * 1)
+				}
+			}()
+
+			for x := range canal {
+				println(x)
+			}
+
+		}
+
+	Para mais referencias sobre concorrencia, paralelismo e go routines, assistir o conteúdo abaixo:
+
+		https://www.youtube.com/watch?v=U_dtQ3_RS3Y			(concorrencia e paralelismo)
+		https://www.youtube.com/watch?v=B4NL0rMvXMg			(goroutines e channels)
+
+		
