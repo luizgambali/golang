@@ -2,7 +2,7 @@ Exemplos genérios em Go, para estudo
 
 Como sempre, na pasta Docs, tem um resumo dos principais tópicos dos meus estudos.
 
-Referencias:
+Algumas referencias:
 
     Documentação: 
     
