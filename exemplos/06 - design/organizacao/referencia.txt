@@ -1,0 +1,15 @@
+Referencia: https://github.com/golang-standards/project-layout
+
+Neste repositório, são propostas várias pastas para organização de um projeto Go.
+Há também uma documentação, explicando a função de cada pasta. É uma convenção
+utilizada pela comunidade.
+
+Há divergencias sobre a convenção, mas a maioria dos projetos na internet são
+criados utilizando essa forma.
+
+Outras referencias, em portugues:
+
+https://www.youtube.com/watch?v=m9_YuScCk2w
+
+https://www.youtube.com/watch?v=OFud4iPuAH8
+

@@ -1,0 +1,3 @@
+Referencia: https://refactoring.guru/pt-br/design-patterns/go
+
+Além do artigo explicando o pattern, há exemplos de suas implementações em Go.
