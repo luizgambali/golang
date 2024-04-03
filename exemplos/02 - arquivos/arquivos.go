@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 )
 
@@ -154,7 +154,7 @@ func Ler(nomeArquivo string) string {
 
 		defer arquivo.Close()
 
-		conteudo, err := ioutil.ReadAll(arquivo)
+		conteudo, err := io.ReadAll(arquivo)
 
 		if err == nil {
 			return string(conteudo)
