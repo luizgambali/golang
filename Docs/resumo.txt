@@ -1158,4 +1158,67 @@ Resumo curso da Udemy:
 		https://www.youtube.com/watch?v=U_dtQ3_RS3Y			(concorrencia e paralelismo)
 		https://www.youtube.com/watch?v=B4NL0rMvXMg			(goroutines e channels)
 
-		
+14. Interfaces
+
+	Interfaces são contratos, onde são disponibilizadas as propriedades e métodos obrigatórios os quais
+	quem a implementa são obrigados a ter. É o mesmo principio de interfaces na orientação a objeto.
+
+	Por exemplo, considere a interface abaixo:
+
+		type forma interface {
+			area() float64
+		}
+
+	Uma vez que o objeto implemente essa interface, obrigatoriamente ele deverá ter o método area, retornando
+	um float64.
+
+	Agora, vamos criar algumas structs (lembrando que Go não é orientado a objetos):
+
+		type retangulo struct {
+			base   float64
+			altura float64
+		}
+
+		type circulo struct {
+			raio float64
+		}
+
+	Como implementariamos as interfaces para essas structs então? Através de funções:
+
+		func (r retangulo) area() float64 {
+			return r.base * r.altura
+		}
+
+		func (c circulo) area() float64 {
+			return math.Pi * math.Pow(c.raio, 2)
+		}
+
+	As funções acima foram implementadas para cada uma das structs (retangulo, e circulo). Cada uma utiliza uma
+	forma específica de calcular a área.
+
+	Como usaríamos a interface então, em nosso código?
+
+		func CalcularAreaForma(f forma) float64 {
+			return f.area()
+		}
+
+	A função CalcularAreaForma recebe como parâmetro um interface do tipo forma. Essa interface possui um método
+	ou função: area(). Independente da variavel que passarmos como parâmetro, ela precisará implementar uma função
+	area(), tal qual a interface exige.
+
+	Tanto a struct retangulo quando a struct circulo possuem esse método. Então, poderiamos utilizadas como parâmetro
+	dessa função:
+
+		func main() {
+			forma1 := retangulo{3, 2}
+			forma2 := circulo{2.5}
+
+			fmt.Println("Area de um retangulo 3 x 2 = ", CalcularAreaForma(forma1))
+			fmt.Println("Area de um circulo com raio de 2.5 = ", CalcularAreaForma(forma2))
+		}
+
+	Tanto forma1 como forma2 são structs que implementam a função area. Dependendo da struct que for passada, o código
+	para calculo da área será executado corretamente (se for um retangulo, será executada a função area para retangulo;
+	se for um circulo, será executada a função area para circulo)
+
+	
