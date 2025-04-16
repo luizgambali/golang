@@ -1,12 +1,14 @@
-Exemplos genérios em Go, para estudo
+Tutorial e exemplos dos cursos de Golang que realizei, para estudos.
 
-Como sempre, na pasta Docs, tem um resumo dos principais tópicos dos meus estudos.
+Na pasta Docs, resumo dos principais tópicos dos meus estudos.
 
-Algumas referencias:
+Referencias:
 
     Documentação: 
     
         https://go.dev/doc/effective_go
+        
+        https://medium.com/@smart_byte_labs/organize-like-a-pro-a-simple-guide-to-go-project-folder-structures-e85e9c1769c2
 
     Youtube: 
     
@@ -22,5 +24,4 @@ Algumas referencias:
         https://gobyexample.com/
 
 
-Importante: para grande parte dos exemplos (senão todos), deixei a referencia de onde peguei 
-o material.
+    Nos exemplos, deixei a referência de onde peguei o material.
