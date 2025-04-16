@@ -1221,4 +1221,356 @@ Resumo curso da Udemy:
 	para calculo da área será executado corretamente (se for um retangulo, será executada a função area para retangulo;
 	se for um circulo, será executada a função area para circulo)
 
+15. Organização do projeto
+
+	A estrutura básica de um projeto golang, conforme melhores práticas adotadas pela comunidade, é:
+
+	project/
+	├── cmd                      # Command-related files
+		└── app                  # Application entry point
+			└── main.go          # Main application logic
+	├── internal                 # Internal codebase
+	├── pkg                      # Shared utilities or helpers
+	├── configs                  # Configuration files
+	├── go.mod                   # Go module definition
+	└── go.sum                   # Go module checksum file
+
+	Há várias formas de se organizar um projeto em golang:
+	fonte: https://medium.com/@smart_byte_labs/organize-like-a-pro-a-simple-guide-to-go-project-folder-structures-e85e9c1769c2
+		
+	Flat Structure
+
+		Os arquivos são colocados na pasta raiz do projeto. Mais apropriado para projetos pequenos, 
+		protótipos, ou testes de conceito.
+
+		project/
+		├── main.go        # Application entry point
+		├── handler.go     # HTTP handlers
+		├── service.go     # Business logic
+		├── repository.go  # Database repository
+		├── config.go      # Configuration settings
+		├── utils.go       # Utility functions
+		├── go.mod         # Go module file
+		└── go.sum         # Go module dependency file
 	
+	Layered Structure
+
+		A aplicação é dividida em camadas, onde cada pasta corresponde a uma camada (model, repository, etc).
+		Indicado para projetos de médio porte (que contenham organização lógica de camadas)
+
+		project
+		├── cmd                      # Command-related files
+		│   └── app                  # Application entry point
+		│       └── main.go          # Main application logic
+		├── internal                 # Internal codebase
+		│   ├── handlers             # HTTP request handlers (controllers)
+		│   │   └── user_handler.go  # User-specific handler
+		│   ├── services             # Business logic (service layer)
+		│   │   └── user_service.go  # User-specific service
+		│   ├── repositories         # Data access (repository layer)
+		│   │   └── user_repo.go     # User-specific repository
+		│   └── models               # Data models (entities)
+		│       └── user.go          # User model
+		├── pkg                      # Shared utilities or helpers
+		├── configs                  # Configuration files
+		├── go.mod                   # Go module definition
+		└── go.sum                   # Go module checksum file
+
+	Domain-Driven Design
+
+		Quando a aplicação é dividida conforme os conceitos do DDD (bound context, domain, etc)
+
+		project
+		├── cmd                    # Command-related files
+		│   └── app                # Application entry point
+		│       └── main.go        # Main application logic
+		├── internal               # Internal codebase
+		│   ├── user               # Domain 'user'
+		│   │   ├── handler.go     # User-specific handler
+		│   │   ├── service.go     # User-specific service
+		│   │   ├── repository.go  # User-specific repository
+		│   │   └── user.go        # User model
+		│   └── product            # Domain 'product'
+		│       ├── handler.go     # Product-specific handler
+		│       ├── service.go     # Product-specific service
+		│       └── repository.go  # Product-specific repository
+		├── pkg                    # Shared utilities
+		├── configs                # Configuration files
+		├── go.mod                 # Go module definition
+		└── go.sum                 # Go module checksum file
+
+	Clean Architecture
+
+		A Arquitetura Limpa organiza a aplicação em camadas distintas, cada uma com dependências explícitas 
+		apontando para dentro. Essa estrutura garante que a lógica de negócios principal permaneça 
+		independente de sistemas externos, como bancos de dados, frameworks ou interfaces de usuário.
+		Ideal para aplicações que precisam se adaptar e escalar ao longo do tempo sem comprometer a 
+		funcionalidade principal, e facilidade dos testes
+
+		project
+		├── cmd/                         # Command-related files
+		│   └── app/                     # Application entry point
+		│       └── main.go              # Main application logic
+		├── internal                     # Internal codebase
+		│   ├── delivery/                # External layer (HTTP Handlers, gRPC, etc.)
+		│   │   └── http/                # HTTP delivery
+		│   │       └── user_handler.go  # User-specific HTTP handler
+		│   ├── usecases/                # Use Cases (business logic layer)
+		│   │   └── user_service.go      # User-specific service logic
+		│   ├── repository/              # Repository (data access, external services)
+		│   │   └── user_repo.go         # User-specific data access
+		│   └── entities/                # Entities (core models, domain objects)
+		│       └── user.go              # User model
+		├── pkg/                         # Shared utilities or helpers
+		├── configs/                     # Configuration files
+		├── go.mod                       # Go module definition
+		└── go.sum                       # Go module checksum file
+
+	Modular Structure
+
+		Uma estrutura modular organiza a aplicação em módulos autocontidos e fracamente acoplados, 
+		cada um com sua própria base de código. Essa abordagem permite que cada módulo se concentre 
+		em funcionalidades ou unidades de negócios específicas, melhorando a reutilização e a 
+		escalabilidade. Ideal para aplicações construídas com base na arquitetura de microsserviços,
+		incentiva uma separação clara de responsabilidades, além de facilitar o gerenciamento separado
+		de dependências reduzindo conflitos entre módulos.
+
+		project/
+		├── user_module/                  # User module
+		│   ├── handler/                    # Handlers for user-related requests
+		│   ├── service/                    # Business logic for user operations
+		│   ├── repository/                 # Data access layer for user data
+		│   ├── user.go                     # User model definition
+		│   ├── go.mod                      # User module Go module definition
+		│   └── go.sum                      # User module Go module checksum file
+		├── product_module/               # Product module
+		│   ├── handler/                    # Handlers for product-related requests
+		│   ├── service/                    # Business logic for product operations
+		│   ├── repository/                 # Data access layer for product data
+		│   ├── product.go                  # Product model definition
+		│   ├── go.mod                      # Product module Go module definition
+		│   └── go.sum                      # Product module Go module checksum file
+		├── api_gateway/                  # API gateway to manage different services
+		│   ├── main.go                     # Main entry point for API gateway
+		│   ├── go.mod                      # API gateway Go module definition
+		│   └── go.sum                      # API gateway Go module checksum file
+		└── configs/                      # Shared configuration files
+	
+	Feature-Based Folder Structure
+
+		Em uma estrutura de pastas baseada em recursos, cada recurso ou funcionalidade do aplicativo 
+		é tratado como uma unidade separada. Todo o código relacionado a esse recurso, incluindo 
+		manipuladores, serviços, repositórios e outros, reside no diretório desse recurso. Essa 
+		abordagem aumenta a coesão entre os recursos e promove o encapsulamento da lógica específica 
+		do recurso. Favorece o encapsulamento, a escalabilidade, o foco nas necessidades de negócio e
+		a alta coesão.
+
+		project/
+		├── cmd/
+		│   └── app/
+		│       └── main.go      # Main application logic
+		├── internal/
+		│   ├── user/            # Feature: User
+		│   │   ├── handler/      # User-specific HTTP Handlers
+		│   │   ├── service/      # User-specific Business Logic
+		│   │   ├── repository/   # User-specific Data Access
+		│   │   └── user.go       # User Model
+		│   ├── product/         # Feature: Product
+		│   │   ├── handler/      # Product-specific HTTP Handlers
+		│   │   ├── service/      # Product-specific Business Logic
+		│   │   ├── repository/   # Product-specific Data Access
+		│   │   └── product.go    # Product Model
+		│   ├── order/           # Feature: Order
+		│   │   ├── handler/      # Order-specific HTTP Handlers
+		│   │   ├── service/      # Order-specific Business Logic
+		│   │   ├── repository/   # Order-specific Data Access
+		│   │   └── order.go      # Order Model
+		├── pkg/                 # Shared utilities or helpers
+		│   └── logger.go        # Logging utilities
+		├── configs/             # Configuration files
+		├── go.mod               # Go module definition
+		└── go.sum               # Go module checksum file
+
+	Hexagonal Architecture
+
+		A Arquitetura Hexagonal, comumente chamada de Portas e Adaptadores, é um padrão arquitetônico 
+		que enfatiza a separação da lógica de negócios principal das dependências externas. Nessa estrutura, 
+		o núcleo interage com o mundo externo por meio de portas (que são interfaces), enquanto sistemas 
+		externos, como bancos de dados e frameworks web, atuam como adaptadores que implementam essas 
+		interfaces.
+
+		project/
+		├── cmd/
+		│   └── app/
+		│       └── main.go                  # Main application logic
+		├── internal/
+		│   ├── core/                        # Core business logic (Entities and Use Cases)
+		│   │   ├── user/                    # User feature
+		│   │   │   ├── entity.go            # User Entity (Domain Object)
+		│   │   │   └── usecase.go           # Business Logic (Use Case)
+		│   │   └── product/                 # Product feature, similarly structured
+		│   │       └── ...                  # Product-related files
+		│   ├── adapters/                    # Adapters implementing interfaces for external systems
+		│   │   ├── database/                # Database adapters (repositories)
+		│   │   │   └── user_repo.go         # User repository implementation
+		│   │   ├── api/                     # API adapters (HTTP Handlers)
+		│   │   │   └── user_handler.go      # User-specific HTTP Handler
+		│   │   └── messaging/               # Messaging systems (e.g., Kafka)
+		│   │       └── user_event.go        # User event messaging
+		│   └── ports/                       # Ports (Interfaces)
+		│       ├── user_repository.go       # User repository interface
+		│       ├── user_service.go          # User service interface
+		│       └── ...                      # Other port interfaces
+		├── pkg/                             # Shared utilities
+		├── configs/                         # Configuration files
+		├── go.mod                           # Go module definition
+		└── go.sum                           # Go module checksum file
+
+	Monorepo Structure
+
+		Um monorepo é um repositório único que abriga múltiplos serviços ou bibliotecas. Essa estrutura é 
+		comumente usada em grandes organizações, permitindo que diferentes projetos sejam desenvolvidos e 
+		implantados de forma independente, mantendo-se dentro de uma base de código unificada.
+
+		project/
+		├── services/
+		│   ├── user-service/
+		│   │   ├── cmd/
+		│   │   │   └── main.go               # User service main application logic
+		│   │   ├── internal/                 # Internal codebase for user service
+		│   │   │   ├── handler/              # User-specific HTTP handlers
+		│   │   │   ├── service/              # User-specific business logic
+		│   │   │   ├── repository/           # User-specific data access
+		│   │   │   └── models/               # User models
+		│   │   ├── go.mod                    # User service Go module definition
+		│   │   └── go.sum                    # User service Go module checksum file
+		│   └── product-service/              # Product service
+		│       ├── cmd/                      # Command-related files for product service
+		│       ├── internal/                 # Internal codebase for product service
+		│       └── go.mod                    # Product service Go module definition
+		├── libs/                             # Shared libraries across multiple services
+		│   ├── logging/                      # Logging library
+		│   ├── authentication/               # Authentication library
+		│   └── utils/                        # Utility functions
+		├── go.mod                            # Top-level Go module definition
+		└── go.sum                            # Top-level Go module checksum file
+
+	CQRS (Command Query Responsibility Segregation)
+
+		No CQRS (Segregação de Responsabilidades de Comando e Consulta), as operações de comando e consulta 
+		são organizadas em modelos separados. Os comandos são responsáveis ​​por alterar o estado (por exemplo,
+		criar ou atualizar dados), enquanto as consultas se concentram exclusivamente na leitura de dados. 
+		Essa estrutura aprimora a separação de responsabilidades no tratamento de solicitações.
+
+		project/
+		├── cmd/
+		│   └── app/
+		│       └── main.go                     # Main application logic
+		├── internal/                           # Internal codebase
+		│   ├── commands/                       # Commands (mutate state)
+		│   │   ├── create_user.go              # Command to create a user
+		│   │   ├── update_user.go              # Command to update a user
+		│   │   └── delete_user.go              # Command to delete a user
+		│   ├── queries/                        # Queries (read data)
+		│   │   └── get_user.go                 # Query to get user data
+		│   ├── repositories/                   # Repositories for data access
+		│   │   └── user_repo.go                # User repository
+		│   ├── models/                         # Domain models
+		│   │   └── user.go                     # User domain model
+		│   └── services/                       # Business logic
+		│       └── user_service.go             # User service logic
+		├── configs/                            # Configuration files
+		├── go.mod                              # Go module definition
+		└── go.sum                              # Go module checksum file
+
+	Onion Architecture
+
+		A Arquitetura Onion enfatiza a separação de preocupações, organizando o código em círculos concêntricos
+		(ou camadas) em torno de um núcleo central. A camada mais interna representa a lógica de negócios e o 
+		modelo de domínio, enquanto as camadas externas contêm dependências externas, como frameworks, interface 
+		do usuário e bancos de dados.
+
+		project/
+		├── cmd/
+		│   └── your-app/
+		│       └── main.go                # Application entry point
+		├── internal/
+		│   ├── domain/                    # Core business logic and entities
+		│   │   ├── entity.go              # Domain entities
+		│   │   └── service.go             # Domain services
+		│   ├── application/               # Application services
+		│   │   ├── usecase.go             # Use cases interacting with domain
+		│   └── infrastructure/            # External infrastructure
+		│       ├── persistence/           # Database implementations
+		│       │   ├── repository.go      # Repository for database interaction
+		│       ├── api/                   # Web API layer
+		│       │   └── handler.go         # HTTP handlers
+		│       └── ...                    # Other external services (message brokers, etc.)
+		├── pkg/
+		│   └── shared/                    # Shared code across the project (helpers, utils)
+		├── configs/                       # Configuration files (YAML, JSON, etc.)
+		│   └── config.yaml
+		└── go.mod                         # Go module file
+
+	Common Architecture
+
+		A Estrutura Comum é adequada para projetos ou cenários mais simples, onde a velocidade de desenvolvimento e 
+		a facilidade de compreensão são priorizadas em detrimento de diretrizes arquitetônicas rígidas. Ela permite 
+		flexibilidade, mas pode resultar em um código menos sustentável a longo prazo.
+
+		project/
+		├── cmd/                         # Main applications for this project
+		│   └── myapp/                   # Directory for the myapp executable
+		│       └── main.go              # Application entry point
+		├── internal/                    # Private application and library code
+		│   ├── app/                     # Application-specific code
+		│   │   └── myapp/               # Application code for myapp
+		│   │       ├── handler.go       # HTTP handlers
+		│   │       └── service.go       # Business logic
+		│   ├── pkg/                     # Shared internal code (private libraries)
+		│   │   └── myprivlib/           # Shared library for internal use
+		│   ├── domain/                  # Domain models and services
+		│   │   ├── entity.go            # Domain entities
+		│   │   └── service.go           # Domain services
+		│   └── infrastructure/          # External infrastructure code
+		│       ├── persistence/         # Database implementations
+		│       │   └── repository.go    # Repository for database interaction
+		│       ├── api/                 # Web API layer
+		│       │   └── handler.go       # API handlers
+		│       └── messaging/           # Messaging systems (e.g., Kafka)
+		│           └── producer.go      # Messaging producer
+		├── pkg/                         # Library code for external use
+		│   └── mypubliclib/             # Public library for external use
+		├── vendor/                      # Application dependencies
+		├── api/                         # OpenAPI/Swagger specs, JSON schema files
+		│   └── api_spec.yaml            # API specification file
+		├── web/                         # Web application components
+		│   ├── static/                  # Static assets (CSS, JS)
+		│   └── templates/               # Server-side templates
+		├── configs/                     # Configuration files
+		│   └── config.yaml              # Default configuration
+		├── init/                        # System init configurations
+		│   └── myapp.service            # Systemd service file
+		├── scripts/                     # Build, install, analysis scripts
+		│   ├── build.sh                 # Build script
+		│   └── install.sh               # Install script
+		├── build/                       # Packaging and CI configurations
+		│   ├── package/                 # Package configurations (Docker, AMI, etc.)
+		│   └── ci/                      # CI configurations (Travis, CircleCI)
+		├── deployments/                 # Deployment configurations and templates
+		│   └── kubernetes/              # Kubernetes deployment configs
+		├── test/                        # Additional external test apps and data
+		│   └── data/                    # Test data
+		├── docs/                        # Design and user documents
+		│   └── architecture.md          # Project architecture document
+		├── tools/                       # Supporting tools for the project
+		│   └── mytool/                  # Example tool directory
+		├── examples/                    # Examples for applications and libraries
+		│   └── example_usage.go         # Example usage of the public library
+		├── third_party/                 # External helper tools and utilities
+		├── githooks/                    # Git hooks
+		├── assets/                      # Other assets (images, logos)
+		├── website/                     # Project website data
+		│   └── index.html               # Homepage for the project
+		├── go.mod                       # Go module file
+		└── go.sum                       # Go module dependency file
