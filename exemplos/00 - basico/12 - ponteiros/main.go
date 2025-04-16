@@ -83,11 +83,13 @@ func AlterarValor1(a int) {
 func AlterarValor2(a *int) {
 	x := a
 
-	*x = 55
+	*a = 75
+
 	println("")
-	println("\tValor de a, dentro da funcao:", a)
+	println("\tValor de a, dentro da funcao:", *a)
 	println("\tValor de x, dentro da função:", *x)
 	println("\tEndereco de x, dentro da função:", &x)
-	println("\tValor de *x:", *x)
+	println("\tEndereco de a, dentro da função:", &a)
 	println("")
+
 }
