@@ -563,6 +563,55 @@ Resumo curso da Udemy:
 		pessoa.Cidade = "São Paulo"
 		pessoa.Estado = "SP"
 		
+	Structs e json: golang permite adicionar tags json para as propriedades das
+	structs, facilitando assim a manipulação de dados:
+
+		type Cliente struct {
+			Nome  string `json:"nome"`
+			Email string `json:"email"`
+			CPF   int    `json:"cpf"`
+		}
+
+		Podemos converter os dados para json:
+		...
+		import (
+			"encoding/json"
+			"fmt"
+		)
+		...
+		func main() {
+			cliente := Cliente{
+				Nome:  "Mayk Brito",
+				Email: "maykbritorst@rst.com",
+				CPF:   123456789,
+			}
+
+			clienteJSON, err := json.Marshal(cliente)
+			if err != nil {
+				fmt.Println(err)
+			}
+			fmt.Println(string(clienteJSON))
+		}
+
+		Ou recuperar os dados de json para a struct:
+
+		...
+		import (
+			"encoding/json"
+			"fmt"
+		)
+		...
+		func main() {
+			jsonData := `{"Nome":"Mayk Brito","Email":"maykbritorst@rst.com.bt","CPF":123456789}`
+			var cliente Cliente
+
+			err := json.Unmarshal([]byte(jsonData), &cliente)
+			if err != nil {
+				fmt.Println(err)
+			}
+			fmt.Println(cliente)
+		}
+
 7. Ponteiros
 
 	Imagine a seguinte situação:
